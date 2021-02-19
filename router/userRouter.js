@@ -1,12 +1,16 @@
-const router = require('express').Router();
-const bcrypt = require('bcrypt');
-const { User } = require('../model/main');
+const router = require("express").Router();
+const bcrypt = require("bcrypt");
+const { User } = require("../model/main");
 
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   const { email, password } = req.body;
+  console.log(email, password);
   const userSearch = await User.findOne({ email });
   if (userSearch) {
-    const validatePassword = await bcrypt.compare(password, userSearch.password);
+    const validatePassword = await bcrypt.compare(
+      password,
+      userSearch.password,
+    );
     if (validatePassword) {
       req.session.userID = userSearch._id;
       res.status(200).json(userSearch);
@@ -18,8 +22,10 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   const { email, name, password } = req.body;
+  console.log(email, password, name);
+
   const userSearch = await User.find({ email });
   if (userSearch.length !== 0) {
     res.sendStatus(500);
